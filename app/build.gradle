@@ -44,6 +44,9 @@ dependencies {
     // Sceneform
     implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.7.0'
 
+    // Sceneform Animation
+    implementation "com.google.ar.sceneform:animation:1.7.0"
+
     // KAndroid
     implementation 'com.pawegio.kandroid:kandroid:0.8.8@aar'
 }

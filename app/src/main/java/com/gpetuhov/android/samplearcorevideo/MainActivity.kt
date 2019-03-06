@@ -11,6 +11,7 @@ import android.view.MotionEvent
 import com.google.ar.core.HitResult
 import com.google.ar.core.Plane
 import com.google.ar.sceneform.AnchorNode
+import com.google.ar.sceneform.animation.ModelAnimator
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
@@ -24,6 +25,9 @@ class MainActivity : AppCompatActivity() {
 
     private var arFragment: ArFragment? = null
     private var modelRenderable: ModelRenderable? = null
+
+    // Controls animation playback.
+    private var animator: ModelAnimator? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,5 +98,15 @@ class MainActivity : AppCompatActivity() {
         model.setParent(anchorNode)
         model.renderable = modelRenderable
         model.select()
+
+        playAnimation()
+    }
+
+    private fun playAnimation() {
+        if (animator == null || animator?.isRunning != true) {
+            val data = modelRenderable?.getAnimationData(0)
+            animator = ModelAnimator(data, modelRenderable)
+            animator?.start()
+        }
     }
 }
