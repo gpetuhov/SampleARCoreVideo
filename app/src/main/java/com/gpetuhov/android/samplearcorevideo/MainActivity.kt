@@ -102,6 +102,7 @@ class MainActivity : AppCompatActivity() {
         playAnimation()
     }
 
+    // This plays animation simultaneously on ALL models with the same ModelRenderable
     private fun playAnimation() {
         if (animator == null || animator?.isRunning != true) {
             val data = modelRenderable?.getAnimationData(0)
