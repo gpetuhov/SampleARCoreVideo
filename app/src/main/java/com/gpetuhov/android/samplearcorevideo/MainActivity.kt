@@ -45,27 +45,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         setContentView(R.layout.activity_main)
-        arFragment = supportFragmentManager.findFragmentById(R.id.arFragment) as WritingArFragment
-        animationButton = findViewById(R.id.animate)
-        videoButton = findViewById(R.id.video)
 
+        arFragment = supportFragmentManager.findFragmentById(R.id.arFragment) as WritingArFragment
+
+        animationButton = findViewById(R.id.animate)
         animationButton?.setOnClickListener { playAnimation() }
+
+        videoButton = findViewById(R.id.video)
         videoButton?.setOnClickListener { toggleVideo() }
 
         loadModel()
-
-        arFragment?.setOnTapArPlaneListener(::onPlaneTap)
-
-        // TODO: refactor this
-
-        // Initialize the VideoRecorder.
-        videoRecorder = VideoRecorder()
-        val orientation = resources.configuration.orientation
-        videoRecorder?.setVideoQuality(CamcorderProfile.QUALITY_2160P, orientation)
-        videoRecorder?.setSceneView(arFragment?.arSceneView)
-
-        videoButton?.isEnabled = true
-        videoButton?.setImageResource(R.drawable.ic_videocam)
+        initArFragment()
+        initVideoRecorder()
     }
 
     /**
@@ -107,6 +98,10 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+    private fun initArFragment() {
+        arFragment?.setOnTapArPlaneListener(::onPlaneTap)
+    }
+
     private fun onPlaneTap(hitResult: HitResult, plane: Plane, motionEvent: MotionEvent) {
         if (modelRenderable == null) {
             return
@@ -131,6 +126,17 @@ class MainActivity : AppCompatActivity() {
             animator = ModelAnimator(data, modelRenderable)
             animator?.start()
         }
+    }
+
+    private fun initVideoRecorder() {
+        // Initialize the VideoRecorder.
+        videoRecorder = VideoRecorder()
+        val orientation = resources.configuration.orientation
+        videoRecorder?.setVideoQuality(CamcorderProfile.QUALITY_2160P, orientation)
+        videoRecorder?.setSceneView(arFragment?.arSceneView)
+
+        videoButton?.isEnabled = true
+        videoButton?.setImageResource(R.drawable.ic_videocam)
     }
 
     private fun toggleVideo() {
