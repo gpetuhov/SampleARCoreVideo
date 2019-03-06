@@ -37,23 +37,7 @@ class MainActivity : AppCompatActivity() {
 
         loadModel()
 
-        // TODO: refactor this
-        arFragment?.setOnTapArPlaneListener { hitResult: HitResult, plane: Plane, motionEvent: MotionEvent ->
-            if (modelRenderable == null) {
-                return@setOnTapArPlaneListener
-            }
-
-            // Create the Anchor at the place of the tap.
-            val anchor = hitResult.createAnchor()
-            val anchorNode = AnchorNode(anchor)
-            anchorNode.setParent(arFragment?.arSceneView?.scene)
-
-            // Create the transformable model and add it to the anchor.
-            val model = TransformableNode(arFragment?.transformationSystem)
-            model.setParent(anchorNode)
-            model.renderable = modelRenderable
-            model.select()
-        }
+        arFragment?.setOnTapArPlaneListener(::onPlaneTap)
     }
 
     /**
@@ -93,5 +77,22 @@ class MainActivity : AppCompatActivity() {
                 toast("Unable to load renderable")
                 null
             }
+    }
+
+    private fun onPlaneTap(hitResult: HitResult, plane: Plane, motionEvent: MotionEvent) {
+        if (modelRenderable == null) {
+            return
+        }
+
+        // Create the Anchor at the place of the tap.
+        val anchor = hitResult.createAnchor()
+        val anchorNode = AnchorNode(anchor)
+        anchorNode.setParent(arFragment?.arSceneView?.scene)
+
+        // Create the transformable model and add it to the anchor.
+        val model = TransformableNode(arFragment?.transformationSystem)
+        model.setParent(anchorNode)
+        model.renderable = modelRenderable
+        model.select()
     }
 }
