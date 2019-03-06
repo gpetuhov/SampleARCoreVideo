@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
 
     private var arFragment: ArFragment? = null
     private var animationButton: FloatingActionButton? = null
+    private var videoButton: FloatingActionButton? = null
     private var modelRenderable: ModelRenderable? = null
 
     // Controls animation playback.
@@ -41,8 +42,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         arFragment = supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment
         animationButton = findViewById(R.id.animate)
+        videoButton = findViewById(R.id.video)
 
         animationButton?.setOnClickListener { playAnimation() }
+        videoButton?.setOnClickListener { toggleVideo() }
 
         loadModel()
 
@@ -112,5 +115,9 @@ class MainActivity : AppCompatActivity() {
             animator = ModelAnimator(data, modelRenderable)
             animator?.start()
         }
+    }
+
+    private fun toggleVideo() {
+        // TODO: implement
     }
 }
