@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadModel() {
         ModelRenderable.builder()
-            .setSource(this, Uri.parse("file:///android_asset/model.sfb"))
+            .setSource(this, Uri.parse("file:///android_asset/andy_dance.sfb"))
             .build()
             .thenAccept { renderable -> modelRenderable = renderable }
             .exceptionally { throwable ->

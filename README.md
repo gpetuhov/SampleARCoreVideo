@@ -3,6 +3,10 @@ ARCore model animation and video recording example.
 
 ## 3D Models used
 
+Andy Dance from Google Animation Sample:
+
+https://github.com/google-ar/sceneform-android-sdk/tree/master/samples/animation
+
 Taunt Monster by Ashley Alicea:
 
 https://poly.google.com/view/2INHDrIBzyI
@@ -16,5 +20,3 @@ https://poly.google.com/view/2INHDrIBzyI
 
 ## References
 https://developers.google.com/ar/develop/java/sceneform/video-recording
-
-https://developers.google.com/ar/develop/java/sceneform/animation/

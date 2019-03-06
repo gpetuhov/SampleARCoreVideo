@@ -52,3 +52,9 @@ sceneform.asset('sampledata/models/model.obj',
         'default',
         'sampledata/models/model.sfa',
         'src/main/assets/model')
+
+
+sceneform.asset('sampledata/models/andy_dance.fbx',
+        'default',
+        'sampledata/models/andy_dance.sfa',
+        'src/main/assets/andy_dance')
