@@ -7,8 +7,13 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MotionEvent
+import com.google.ar.core.HitResult
+import com.google.ar.core.Plane
+import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.ux.ArFragment
+import com.google.ar.sceneform.ux.TransformableNode
 import com.pawegio.kandroid.toast
 
 class MainActivity : AppCompatActivity() {
@@ -31,6 +36,24 @@ class MainActivity : AppCompatActivity() {
         arFragment = supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment
 
         loadModel()
+
+        // TODO: refactor this
+        arFragment?.setOnTapArPlaneListener { hitResult: HitResult, plane: Plane, motionEvent: MotionEvent ->
+            if (modelRenderable == null) {
+                return@setOnTapArPlaneListener
+            }
+
+            // Create the Anchor at the place of the tap.
+            val anchor = hitResult.createAnchor()
+            val anchorNode = AnchorNode(anchor)
+            anchorNode.setParent(arFragment?.arSceneView?.scene)
+
+            // Create the transformable model and add it to the anchor.
+            val model = TransformableNode(arFragment?.transformationSystem)
+            model.setParent(anchorNode)
+            model.renderable = modelRenderable
+            model.select()
+        }
     }
 
     /**
