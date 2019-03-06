@@ -8,6 +8,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MotionEvent
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.ar.core.HitResult
 import com.google.ar.core.Plane
 import com.google.ar.sceneform.AnchorNode
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private var arFragment: ArFragment? = null
+    private var animationButton: FloatingActionButton? = null
     private var modelRenderable: ModelRenderable? = null
 
     // Controls animation playback.
@@ -38,6 +40,9 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
         arFragment = supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment
+        animationButton = findViewById(R.id.animate)
+
+        animationButton?.setOnClickListener { playAnimation() }
 
         loadModel()
 
@@ -98,8 +103,6 @@ class MainActivity : AppCompatActivity() {
         model.setParent(anchorNode)
         model.renderable = modelRenderable
         model.select()
-
-        playAnimation()
     }
 
     // This plays animation simultaneously on ALL models with the same ModelRenderable
