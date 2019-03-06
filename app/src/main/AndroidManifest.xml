@@ -9,6 +9,9 @@
          visible in the Google Play Store on devices that support ARCore. -->
     <uses-feature android:name="android.hardware.camera.ar" android:required="true"/>
 
+    <!-- For video recording -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
             android:allowBackup="false"
             android:icon="@mipmap/ic_launcher"
