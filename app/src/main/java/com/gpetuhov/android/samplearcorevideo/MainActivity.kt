@@ -2,11 +2,14 @@ package com.gpetuhov.android.samplearcorevideo
 
 import android.app.Activity
 import android.app.ActivityManager
+import android.content.ContentValues
 import android.content.Context
+import android.media.CamcorderProfile
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.MotionEvent
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.ar.core.HitResult
@@ -14,7 +17,6 @@ import com.google.ar.core.Plane
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.animation.ModelAnimator
 import com.google.ar.sceneform.rendering.ModelRenderable
-import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 import com.pawegio.kandroid.toast
 
@@ -24,13 +26,16 @@ class MainActivity : AppCompatActivity() {
         const val MIN_OPENGL_VERSION = 3.0
     }
 
-    private var arFragment: ArFragment? = null
+    private var arFragment: WritingArFragment? = null
     private var animationButton: FloatingActionButton? = null
     private var videoButton: FloatingActionButton? = null
     private var modelRenderable: ModelRenderable? = null
 
     // Controls animation playback.
     private var animator: ModelAnimator? = null
+
+    // VideoRecorder encapsulates all the video recording functionality.
+    private var videoRecorder: VideoRecorder? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         setContentView(R.layout.activity_main)
-        arFragment = supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment
+        arFragment = supportFragmentManager.findFragmentById(R.id.arFragment) as WritingArFragment
         animationButton = findViewById(R.id.animate)
         videoButton = findViewById(R.id.video)
 
@@ -50,6 +55,17 @@ class MainActivity : AppCompatActivity() {
         loadModel()
 
         arFragment?.setOnTapArPlaneListener(::onPlaneTap)
+
+        // TODO: refactor this
+
+        // Initialize the VideoRecorder.
+        videoRecorder = VideoRecorder()
+        val orientation = resources.configuration.orientation
+        videoRecorder?.setVideoQuality(CamcorderProfile.QUALITY_2160P, orientation)
+        videoRecorder?.setSceneView(arFragment?.arSceneView)
+
+        videoButton?.isEnabled = true
+        videoButton?.setImageResource(R.drawable.ic_videocam)
     }
 
     /**
@@ -118,6 +134,28 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun toggleVideo() {
-        // TODO: implement
+        if (arFragment?.hasWritePermission() != true) {
+            toast("Video recording requires the WRITE_EXTERNAL_STORAGE permission")
+            arFragment?.launchPermissionSettings()
+            return
+        }
+
+        val recording = videoRecorder?.onToggleRecord() ?: false
+
+        if (recording) {
+            videoButton?.setImageResource(R.drawable.ic_stop)
+
+        } else {
+            videoButton?.setImageResource(R.drawable.ic_videocam)
+            val videoPath = videoRecorder?.videoPath?.absolutePath ?: ""
+            toast("Video saved: $videoPath")
+
+            // Send  notification of updated content.
+            val values = ContentValues()
+            values.put(MediaStore.Video.Media.TITLE, "Sceneform Video")
+            values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
+            values.put(MediaStore.Video.Media.DATA, videoPath)
+            contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values)
+        }
     }
 }
