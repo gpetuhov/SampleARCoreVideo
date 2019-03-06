@@ -3,9 +3,12 @@ package com.gpetuhov.android.samplearcorevideo
 import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.google.ar.sceneform.rendering.ModelRenderable
+import com.google.ar.sceneform.ux.ArFragment
 import com.pawegio.kandroid.toast
 
 class MainActivity : AppCompatActivity() {
@@ -14,9 +17,20 @@ class MainActivity : AppCompatActivity() {
         const val MIN_OPENGL_VERSION = 3.0
     }
 
+    private var arFragment: ArFragment? = null
+    private var modelRenderable: ModelRenderable? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (!checkIsSupportedDeviceOrFinish(this)) {
+            return
+        }
+
         setContentView(R.layout.activity_main)
+        arFragment = supportFragmentManager.findFragmentById(R.id.arFragment) as ArFragment
+
+        loadModel()
     }
 
     /**
@@ -45,5 +59,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         return true
+    }
+
+    private fun loadModel() {
+        ModelRenderable.builder()
+            .setSource(this, Uri.parse("file:///android_asset/model.sfb"))
+            .build()
+            .thenAccept { renderable -> modelRenderable = renderable }
+            .exceptionally { throwable ->
+                toast("Unable to load renderable")
+                null
+            }
     }
 }
